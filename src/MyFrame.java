@@ -1,97 +1,51 @@
 import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MyFrame extends JFrame {
 
     private JTree tree;
+    private MainContent mainContent;
 
-    public MyFrame(String menuEtiq) {
+    public MyFrame() {
         this.setLayout(new BorderLayout());
 
         // Menu Bar
-        JMenuBar menuBar = new JMenuBar();
-
-        JMenu memoire = new JMenu("Memoire");
-        JMenu recherche = new JMenu("Recherche");
-        JMenu enseignant = new JMenu("Enseignants");
-
-        JMenuItem ajouterMenuItem = new JMenuItem("Ajouter");
-        JMenuItem lireMenuItem = new JMenuItem("Lire");
-        JMenuItem modifierMenuItem = new JMenuItem("Modifier");
-        JMenuItem supprimerMenuItem = new JMenuItem("Supprimer");
-
-        // Add ActionListener to menu items
-        ajouterMenuItem.addActionListener(new MenuActionListener());
-        lireMenuItem.addActionListener(new MenuActionListener());
-        modifierMenuItem.addActionListener(new MenuActionListener());
-        supprimerMenuItem.addActionListener(new MenuActionListener());
-
-        memoire.add(ajouterMenuItem);
-        memoire.add(lireMenuItem);
-        memoire.add(modifierMenuItem);
-        memoire.add(supprimerMenuItem);
-
-        menuBar.add(memoire);
-        menuBar.add(recherche);
-        menuBar.add(enseignant);
+        MenuBar menuBar = new MenuBar();
 
         add(menuBar, BorderLayout.NORTH);
         // --> Menu Bar
 
         // Navigation Bar
-        DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode();
+        NavigationBar navBar = new NavigationBar();
 
-        DefaultMutableTreeNode memoireNode = new DefaultMutableTreeNode("Espace memoire");
+        tree = new JTree(navBar);
+        tree.addTreeSelectionListener(new TreeSelectionListener() {
+            @Override
+            public void valueChanged(TreeSelectionEvent e) {
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
-        DefaultMutableTreeNode createMemoireNode = new DefaultMutableTreeNode("Ajouter");
-        DefaultMutableTreeNode readMemoireNode = new DefaultMutableTreeNode("Lire");
-        DefaultMutableTreeNode modifyMemoireNode = new DefaultMutableTreeNode("Modifier");
-        DefaultMutableTreeNode deleteMemoireNode = new DefaultMutableTreeNode("Supprimer");
+                if (selectedNode != null) {
+                    mainContent.buildContent(selectedNode);
+                }
+            }
+        });
 
-        memoireNode.add(createMemoireNode);
-        memoireNode.add(readMemoireNode);
-        memoireNode.add(modifyMemoireNode);
-        memoireNode.add(deleteMemoireNode);
-
-        DefaultMutableTreeNode searchNode = new DefaultMutableTreeNode("Espace recherche");
-
-        DefaultMutableTreeNode profNode = new DefaultMutableTreeNode("Espace Enseignants");
-
-        DefaultMutableTreeNode createProfNode = new DefaultMutableTreeNode("Ajouter");
-        DefaultMutableTreeNode modifyProfNode = new DefaultMutableTreeNode("Modifier");
-        DefaultMutableTreeNode deleteProfNode = new DefaultMutableTreeNode("Supprimer");
-
-        profNode.add(createProfNode);
-        profNode.add(modifyProfNode);
-        profNode.add(deleteProfNode);
-
-        parentNode.add(memoireNode);
-        parentNode.add(searchNode);
-        parentNode.add(profNode);
-
-        tree = new JTree(parentNode);
         add(new JScrollPane(tree), BorderLayout.WEST);
         // --> Navigation Bar
 
         // Main Space
-        JPanel mainPanel = new JPanel();
+        mainContent = new MainContent();
 
-        mainPanel.setPreferredSize(new Dimension(200, 200));
-        mainPanel.setBackground(Color.lightGray);
-        mainPanel.setBorder(BorderFactory.createTitledBorder("Espace principal "));
-        this.add(mainPanel, BorderLayout.CENTER);
+        this.add(mainContent, BorderLayout.CENTER);
         // --> Main Space
 
         // Visualisation Bar
-        JPanel visualisationPanel = new JPanel();
+        VisualizationBar visualBar = new VisualizationBar();
 
-        visualisationPanel.setPreferredSize(new Dimension(200, 100));
-        visualisationPanel.setBackground(Color.white);
-        visualisationPanel.setBorder(BorderFactory.createTitledBorder("Barre visualisation "));
-        this.add(visualisationPanel, BorderLayout.EAST);
+        this.add(visualBar, BorderLayout.EAST);
         // --> Visualisation Bar
 
         // Bottom Bar
@@ -108,36 +62,9 @@ public class MyFrame extends JFrame {
         setVisible(true);
     }
 
-    private class MenuActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JMenuItem source = (JMenuItem) e.getSource();
-            String actionCommand = source.getText();
-
-            // Update JTree based on the selected menu item
-            DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
-            DefaultMutableTreeNode memoireNode = (DefaultMutableTreeNode) root.getChildAt(0);
-
-            switch (actionCommand) {
-                case "Ajouter":
-                    // Update for "Ajouter" action
-                    break;
-                case "Lire":
-                    // Update for "Lire" action
-                    break;
-                case "Modifier":
-                    // Update for "Modifier" action
-                    break;
-                case "Supprimer":
-                    // Update for "Supprimer" action
-                    break;
-            }
-        }
-    }
-
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new MyFrame("Menu Example");
-        });
+        MyFrame frame = new MyFrame();
+
+        frame.setVisible(true);
     }
 }
