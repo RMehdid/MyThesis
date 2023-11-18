@@ -16,6 +16,7 @@ public class MainContent extends JPanel {
         this.setBackground(Color.lightGray);
         this.setBorder(BorderFactory.createTitledBorder("Espace principal "));
     }
+    
 
     void buildContent(DefaultMutableTreeNode selectedNode) {
         reinit( () -> {
