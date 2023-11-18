@@ -8,6 +8,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 public class MainContent extends JPanel {
 
@@ -133,43 +134,66 @@ public class MainContent extends JPanel {
                     this.add(getIdDeleteButton);
                     this.setLayout(new GridLayout(2, 1));
                 }
+                case "Rechercher" -> {
+                    searchMemoireBuild();
+                }
                 default -> {
                 }
             }
         });
     }
 
-    void searchMemoireBuild(SearchCallBack callBack) {
-        JTextField query = new JTextField(10);
-        query.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                // TODO: - Perform search call
-                Memoire.getMemoire("10", memoire -> {
-                    callBack.onSuccess(new Memoire[]{memoire, memoire, memoire});
-                });
-            }
+     void searchMemoireBuild() {
+         JTextField query = new JTextField(10);
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                //
-            }
+         query.addKeyListener(new KeyListener() {
+             @Override
+             public void keyTyped(KeyEvent e) {
+                 // TODO: - Perform search call
+                 System.out.println("search for: " + query.getText());
+                 getMemoires(query.getText(), new SearchCallBack() {
+                     @Override
+                     public void onSuccess(Memoire[] memoires) {
+                         reinit(() -> {
+                             setLayout(new BoxLayout(MainContent.this, BoxLayout.Y_AXIS));
+                             for (Memoire memoire : memoires) {
+                                 add(new MemoireCard(memoire));
+                             }
+                         });
+                     }
 
-            @Override
-            public void keyReleased(KeyEvent e) {
-                //
-            }
-        });
-    }
+                     @Override
+                     public void onFailure() {
+
+                     }
+                 });
+             }
+
+             @Override
+             public void keyPressed(KeyEvent e) {
+                 //
+             }
+
+             @Override
+             public void keyReleased(KeyEvent e) {
+                 //
+             }
+         });
+
+         this.add(query);
+     }
 
     void getMemoire(String id, Memoire.MemoireCallback callback) {
         //TODO: api call get memoire
         Memoire.getMemoire(id, callback);
     }
 
-    void getMemoire(String query, Memoire.MemoireCallback callback) {
+    void getMemoires(String query, SearchCallBack callback) {
         //TODO: api call get memoire
-        Memoire.getMemoire(query, callback);
+        Memoire.getMemoire(query, memoire -> {
+            Memoire[] memoires = {memoire, memoire, memoire};
+            callback.onSuccess(memoires);
+        });
     }
 
     void reinit(BuildCallBack callBack) {
