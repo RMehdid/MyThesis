@@ -21,7 +21,7 @@ public class LabeledComboBox<T> extends JPanel {
 
     protected String getText() {
         if(comboBox != null) {
-            return (String) comboBox.getSelectedItem();
+            return comboBox.getSelectedItem().toString();
         }
 
         return "error";

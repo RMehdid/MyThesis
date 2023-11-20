@@ -46,16 +46,14 @@ public class DBConnector {
 
         Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
 
-        String query = "INSERT INTO Professor (id, nom, prenom, speciality) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Student (id, nom, prenom, speciality) VALUES (?, ?, ?, ?)";
 
         PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-        preparedStatement.setInt(1, Math.toIntExact(student.id));
+        preparedStatement.setLong(1, student.id);
         preparedStatement.setString(2, student.nom);
         preparedStatement.setString(3, student.prenom);
         preparedStatement.setString(4, student.speciality.toString());
-
-        preparedStatement.executeQuery();
 
         return preparedStatement.executeUpdate() > 0;
     }
@@ -66,12 +64,10 @@ public class DBConnector {
 
         PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-        preparedStatement.setInt(1, Math.toIntExact(professor.id));
+        preparedStatement.setLong(1, professor.id);
         preparedStatement.setString(2, professor.nom);
         preparedStatement.setString(3, professor.prenom);
         preparedStatement.setString(4, professor.speciality.toString());
-
-        preparedStatement.executeQuery();
 
         return preparedStatement.executeUpdate() > 0;
     }
@@ -96,7 +92,7 @@ public class DBConnector {
         String query = "SELECT * FROM Student where id = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setString(1, String.valueOf(id));
+        preparedStatement.setLong(1, id);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
