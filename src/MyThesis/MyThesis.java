@@ -1,15 +1,21 @@
+package MyThesis;
+
+import Models.Admin;
+import Models.Student;
+import Models.User;
+
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 
-public class MyFrame extends JFrame {
+public class MyThesis extends JFrame {
 
     private JTree tree;
     private MainContent mainContent;
 
-    public MyFrame() {
+    public MyThesis(User user) {
         this.setLayout(new BorderLayout());
 
         // Menu Bar
@@ -42,11 +48,14 @@ public class MyFrame extends JFrame {
         this.add(mainContent, BorderLayout.CENTER);
         // --> Main Space
 
-        // Visualisation Bar
-        VisualizationBar visualBar = new VisualizationBar();
+        if(user instanceof Admin) {
 
-        this.add(visualBar, BorderLayout.EAST);
-        // --> Visualisation Bar
+            // Visualisation Bar
+            VisualizationBar visualBar = new VisualizationBar();
+
+            this.add(visualBar, BorderLayout.EAST);
+            // --> Visualisation Bar
+        }
 
         // Bottom Bar
         JPanel bottomBar = new JPanel();
@@ -63,7 +72,7 @@ public class MyFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        MyFrame frame = new MyFrame();
+        MyThesis frame = new MyThesis(Admin.admin);
 
         frame.setVisible(true);
     }

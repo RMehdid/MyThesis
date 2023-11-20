@@ -1,30 +1,44 @@
 package Models;
 
+import Models.Professor;
+import Models.Student;
+
+import java.util.*;
+
+/**
+ * 
+ */
 public class Memoire {
-
-    public String id;
+    public int cote;
     public String title;
-    public String prof;
-    public String year;
-    public String author;
+    public Professor professor;
+    public Student[] authors;
+    public int date;
+    public Level level;
+    public String resume;
+    public String pdfUrl;
 
-    Memoire(String id, String title, String prof, String year, String author) {
-        this.id = id;
+    public Memoire(int cote, String title, Professor professor, int date, Level level, Student[] authors, String resume, String pdfUrl) {
+        this.cote = cote;
         this.title = title;
-        this.prof = prof;
-        this.year = year;
-        this.author = author;
+        this.professor = professor;
+        this.date = date;
+        this.level = level;
+        this.authors = authors;
+        this.resume = resume;
+        this.pdfUrl = pdfUrl;
     }
 
-    public static void getMemoire(String id, MemoireCallback callback) {
-        // Assume memoire is an instance of the Models.Memoire class
-        // Perform any necessary logic to retrieve or generate the memoire object
-        Memoire memoire = new Memoire(id, "AI", "Rezzoug", "2020", "Samy Abderraouf Mehdid");
-        // Call the success callback with the retrieved memoire object
-        callback.onSuccess(memoire);
-    }
-
-    public interface MemoireCallback {
-        void onSuccess(Memoire memoire);
-    }
+    public static Memoire memoireExm = new Memoire(
+            837422,
+            "AI",
+            Professor.professor,
+            2020,
+            Level.Bachelor,
+            new Student[]{
+                    Student.student, Student.student, Student.student
+            },
+            "djughvpiaufgh ;fuihgupifvg iugrhfpiwufgwf iurfgaiufg",
+            "/Users/raynex/Desktop/SI/S6/PFE/Preparer\\ soutenance.pdf"
+    );
 }

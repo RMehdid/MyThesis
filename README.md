@@ -1,1 +1,1 @@
-# MyThesis
+# MyThesis.MyThesis

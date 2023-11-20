@@ -1,9 +1,11 @@
+package MyThesis;
+
 import javax.swing.*;
 
 public class MenuBar extends JMenuBar {
 
     MenuBar() {
-        JMenu memoire = new JMenu("Models.Memoire");
+        JMenu memoire = new JMenu("Models.Models.Memoire");
         JMenu recherche = new JMenu("Recherche");
         JMenu enseignant = new JMenu("Enseignants");
 

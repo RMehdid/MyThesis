@@ -5,6 +5,7 @@ import Models.Memoire;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.Arrays;
 
 public class MemoireCard extends JPanel {
     JLabel title;
@@ -13,9 +14,9 @@ public class MemoireCard extends JPanel {
     JLabel id;
     public MemoireCard(Memoire memoire) {
         title = new JLabel("Title: " + memoire.title);
-        author = new JLabel("Author: " + memoire.author);
-        year = new JLabel("Year: " + memoire.year);
-        id = new JLabel("ID: " + memoire.id);
+        author = new JLabel("Author: " + Arrays.stream(memoire.authors).findFirst().toString());
+        year = new JLabel("Year: " + memoire.date);
+        id = new JLabel("#" + memoire.cote);
 
         // Create two JPanels to hold labels on the left and right sides
         JPanel leftPanel = new JPanel(new GridLayout(2, 1));
