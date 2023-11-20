@@ -1,5 +1,8 @@
 package Auth;
 
+import Components.InlineField;
+import Auth.Components.InlinePassword;
+import Auth.Service.DBConnector;
 import Models.Admin;
 import Models.Professor;
 import Models.Student;
@@ -97,16 +100,5 @@ public class AuthFrame extends JFrame implements ActionListener {
                 myThesis.setVisible(true);
             }
         }
-    }
-}
-
-class Main {
-    public static void main(String[] args) {
-        AuthFrame frame = new AuthFrame();
-        frame.setTitle("Login Form");
-        frame.setVisible(true);
-        frame.setBounds(10, 10, 370, 600);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
     }
 }

@@ -1,6 +1,6 @@
 package MyThesis;
 
-import Components.LabeledField;
+import Components.InlineField;
 import Components.MemoireCard;
 import Components.MemoirePanel;
 import Models.Memoire;
@@ -51,7 +51,7 @@ public class MainContent extends JPanel {
                     this.add(createMemoire);
                 }
                 case "Lire" -> {
-                    LabeledField readField = new LabeledField("Id de memoire a lire: ");
+                    InlineField readField = new InlineField("Id de memoire a lire: ");
                     JButton getIdReadButton = new JButton("confirmer");
                     getIdReadButton.addActionListener(e -> {
                         Memoire memoire = user.readMemoire(Integer.parseInt(readField.getText()));
@@ -82,7 +82,7 @@ public class MainContent extends JPanel {
                     this.setLayout(new GridLayout(2, 1));
                 }
                 case "Modifier" -> {
-                    LabeledField modifyField = new LabeledField("Id de memoire a modifier: ");
+                    InlineField modifyField = new InlineField("Id de memoire a modifier: ");
                     JButton getIdModifyButton = new JButton("confirmer");
                     getIdModifyButton.addActionListener(e -> {
                         Memoire memoire = user.readMemoire(Integer.parseInt(modifyField.getText()));
@@ -113,7 +113,7 @@ public class MainContent extends JPanel {
                     this.setLayout(new GridLayout(2, 1));
                 }
                 case "Supprimer" -> {
-                    LabeledField deleteField = new LabeledField("Id de memoire a supprimer: ");
+                    InlineField deleteField = new InlineField("Id de memoire a supprimer: ");
                     JButton getIdDeleteButton = new JButton("confirmer");
                     getIdDeleteButton.addActionListener(e -> {
                         Memoire memoire = user.readMemoire(Integer.parseInt(deleteField.getText()));

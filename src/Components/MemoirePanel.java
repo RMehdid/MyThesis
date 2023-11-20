@@ -10,11 +10,11 @@ import java.util.Arrays;
 public class MemoirePanel extends JPanel {
 
     public MemoirePanel(Memoire memoire, boolean disabled, CallBack callBack) {
-        LabeledField title = new LabeledField("Titre: ", memoire.title, disabled);
+        InlineField title = new InlineField("Titre: ", memoire.title, disabled);
 
-        LabeledField prof = new LabeledField("Encadreur: ", memoire.professor.nom + " " + memoire.professor.prenom, disabled);
+        InlineField prof = new InlineField("Encadreur: ", memoire.professor.nom + " " + memoire.professor.prenom, disabled);
 
-        LabeledField year = new LabeledField("Annee: ",  Integer.toString(memoire.date), disabled);
+        InlineField year = new InlineField("Annee: ",  Integer.toString(memoire.date), disabled);
 
         this.add(title);
         this.add(prof);
@@ -24,7 +24,7 @@ public class MemoirePanel extends JPanel {
 
         for (Student author: memoire.authors) {
             counter++;
-            LabeledField authorField = new LabeledField("Auteur: ", author.nom + " " + author.prenom, disabled);
+            InlineField authorField = new InlineField("Auteur: ", author.nom + " " + author.prenom, disabled);
             this.add(authorField);
         }
 
@@ -50,13 +50,13 @@ public class MemoirePanel extends JPanel {
     }
 
     public MemoirePanel(CallBack callBack) {
-        LabeledField title = new LabeledField("Titre: ");
+        InlineField title = new InlineField("Titre: ");
 
-        LabeledField prof = new LabeledField("Encadreur: ");
+        InlineField prof = new InlineField("Encadreur: ");
 
-        LabeledField year = new LabeledField("Annee: ");
+        InlineField year = new InlineField("Annee: ");
 
-        LabeledField author = new LabeledField("Auteur: ");
+        InlineField author = new InlineField("Auteur: ");
 
         JPanel buttonsPanel = new JPanel();
         JButton confirm = new JButton("confirm");

@@ -1,4 +1,4 @@
-package Auth;
+package Auth.Service;
 
 import Models.*;
 

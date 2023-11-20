@@ -1,4 +1,4 @@
-package Auth;
+package Auth.Components;
 
 import Models.Speciality;
 
@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 
 public class LabeledComboBox<T> extends JPanel {
     JComboBox<T> comboBox;
-    LabeledComboBox(String string, T[] values) {
+    public LabeledComboBox(String string, T[] values) {
         setLayout(new FlowLayout(FlowLayout.LEFT));
 
         JLabel label = new JLabel(string);
@@ -19,7 +19,7 @@ public class LabeledComboBox<T> extends JPanel {
         add(comboBox);
     }
 
-    protected String getText() {
+    public String getText() {
         if(comboBox != null) {
             return comboBox.getSelectedItem().toString();
         }

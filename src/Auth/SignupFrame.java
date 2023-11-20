@@ -1,5 +1,9 @@
 package Auth;
 
+import Components.InlineField;
+import Auth.Components.InlinePassword;
+import Auth.Components.LabeledComboBox;
+import Auth.Service.DBConnector;
 import Models.Speciality;
 import Models.Student;
 import MyThesis.MyThesis;
@@ -94,16 +98,5 @@ public class SignupFrame extends JFrame implements ActionListener {
         } else {
             JOptionPane.showMessageDialog(this, "Username Already exists");
         }
-    }
-}
-
-class SignUpMain {
-    public static void main(String[] args) {
-        AuthFrame frame = new AuthFrame();
-        frame.setTitle("SignUp Form");
-        frame.setVisible(true);
-        frame.setBounds(10, 10, 370, 600);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
     }
 }

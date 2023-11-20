@@ -10,7 +10,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 
-public class MyThesis extends JFrame {
+public class MyThesis extends JFrame implements TreeSelectionListener {
 
     private JTree tree;
     private MainContent mainContent;
@@ -18,28 +18,13 @@ public class MyThesis extends JFrame {
     public MyThesis(User user) {
         this.setLayout(new BorderLayout());
 
-        // Menu Bar
-        MenuBar menuBar = new MenuBar();
-
-        add(menuBar, BorderLayout.NORTH);
-        // --> Menu Bar
-
         // Navigation Bar
         NavigationBar navBar = new NavigationBar();
 
         tree = new JTree(navBar);
-        tree.addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+        tree.addTreeSelectionListener(this);
 
-                if (selectedNode != null) {
-                    mainContent.buildContent(selectedNode);
-                }
-            }
-        });
-
-        add(new JScrollPane(tree), BorderLayout.WEST);
+        add(tree, BorderLayout.WEST);
         // --> Navigation Bar
 
         // Main Space
@@ -71,9 +56,22 @@ public class MyThesis extends JFrame {
         setVisible(true);
     }
 
+    private void initializeComponents() {
+        tree = new JTree();
+    }
+
     public static void main(String[] args) {
         MyThesis frame = new MyThesis(Admin.admin);
 
         frame.setVisible(true);
+    }
+
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+
+        if (selectedNode != null) {
+            mainContent.buildContent(selectedNode);
+        }
     }
 }

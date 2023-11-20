@@ -1,28 +1,31 @@
-package Auth;
+package Auth.Components;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class InlineField extends JPanel {
+public class InlinePassword extends JPanel {
 
-    JTextField textField;
-
-    InlineField(String string) {
+    JPasswordField textField;
+    public InlinePassword(String string) {
         setLayout(new FlowLayout(FlowLayout.LEFT));
 
         JLabel label = new JLabel(string);
-        textField = new JTextField(15);
+        textField = new JPasswordField(15);
         textField.setPreferredSize(new Dimension(130, 30));
 
         add(label);
         add(textField);
     }
 
-    protected String getText() {
+    public String getText() {
         if(textField != null) {
             return textField.getText();
         }
 
         return "error";
+    }
+
+    public void setEchoChar(char c) {
+        this.textField.setEchoChar(c);
     }
 }
