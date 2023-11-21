@@ -18,8 +18,14 @@ public class MyThesis extends JFrame implements TreeSelectionListener {
     public MyThesis(User user) {
         this.setLayout(new BorderLayout());
 
+        JPanel upperBar = new JPanel();
+
+        upperBar.setPreferredSize(new Dimension(200, 30));
+        upperBar.setBackground(Color.lightGray);
+        this.add(upperBar, BorderLayout.NORTH);
+
         // Navigation Bar
-        NavigationBar navBar = new NavigationBar();
+        NavigationBar navBar = new NavigationBar(user);
 
         tree = new JTree(navBar);
         tree.addTreeSelectionListener(this);
@@ -28,19 +34,17 @@ public class MyThesis extends JFrame implements TreeSelectionListener {
         // --> Navigation Bar
 
         // Main Space
-        mainContent = new MainContent();
+        mainContent = new MainContent(user);
 
         this.add(mainContent, BorderLayout.CENTER);
         // --> Main Space
 
-        if(user instanceof Admin) {
 
-            // Visualisation Bar
-            VisualizationBar visualBar = new VisualizationBar();
+        // Visualisation Bar
+        ProfileBar visualBar = new ProfileBar(user);
 
-            this.add(visualBar, BorderLayout.EAST);
-            // --> Visualisation Bar
-        }
+        this.add(visualBar, BorderLayout.EAST);
+        // --> Visualisation Bar
 
         // Bottom Bar
         JPanel bottomBar = new JPanel();
@@ -56,12 +60,8 @@ public class MyThesis extends JFrame implements TreeSelectionListener {
         setVisible(true);
     }
 
-    private void initializeComponents() {
-        tree = new JTree();
-    }
-
     public static void main(String[] args) {
-        MyThesis frame = new MyThesis(Admin.admin);
+        MyThesis frame = new MyThesis(Student.student);
 
         frame.setVisible(true);
     }

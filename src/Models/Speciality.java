@@ -37,13 +37,4 @@ public enum Speciality {
             }
         }
     }
-
-    public static Speciality[] allCases = new Speciality[]{
-            Speciality.Informatics,
-            Speciality.Mathematics,
-            Speciality.Chemistry,
-            Speciality.Physics,
-            Speciality.Biologie,
-            Speciality.Geologie
-    };
 }

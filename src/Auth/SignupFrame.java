@@ -18,7 +18,7 @@ public class SignupFrame extends JFrame implements ActionListener {
     InlineField matriculePanel = new InlineField("MATRICULE");
     InlineField familyNamePanel = new InlineField("FAMILY NAME");
     InlineField firstnamePanel = new InlineField("FIRST NAME");
-    LabeledComboBox<Speciality> specialityField = new LabeledComboBox<>("SPECIALITY", Speciality.allCases);
+    LabeledComboBox<Speciality> specialityField = new LabeledComboBox<>("SPECIALITY", Speciality.values());
     InlinePassword passwordPanel = new InlinePassword("PASSWORD");
     InlinePassword rePasswordPanel = new InlinePassword("RE-ENTER PASSWORD");
     JButton loginButton = new JButton("SIGNUP");

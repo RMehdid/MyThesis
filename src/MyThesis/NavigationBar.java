@@ -1,41 +1,62 @@
 package MyThesis;
 
+import Models.Admin;
+import Models.User;
+
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class NavigationBar extends DefaultMutableTreeNode {
 
-    NavigationBar() {
-        DefaultMutableTreeNode memoireNode = new DefaultMutableTreeNode("Espace memoire");
+    DefaultMutableTreeNode memoireNode;
+    DefaultMutableTreeNode createMemoireNode;
+    DefaultMutableTreeNode modifyMemoireNode;
+    DefaultMutableTreeNode readMemoireNode;
+    DefaultMutableTreeNode deleteMemoireNode;
+    DefaultMutableTreeNode searchNode;
+    DefaultMutableTreeNode searchChild;
+    DefaultMutableTreeNode profNode;
+    DefaultMutableTreeNode createProfNode;
+    DefaultMutableTreeNode modifyProfNode;
+    DefaultMutableTreeNode deleteProfNode;
 
-        DefaultMutableTreeNode createMemoireNode = new DefaultMutableTreeNode("Ajouter");
-        DefaultMutableTreeNode readMemoireNode = new DefaultMutableTreeNode("Lire");
-        DefaultMutableTreeNode modifyMemoireNode = new DefaultMutableTreeNode("Modifier");
-        DefaultMutableTreeNode deleteMemoireNode = new DefaultMutableTreeNode("Supprimer");
+    NavigationBar(User user) {
+        memoireNode = new DefaultMutableTreeNode("Espace memoire");
 
-        memoireNode.add(createMemoireNode);
+        createMemoireNode = new DefaultMutableTreeNode("Ajouter");
+        readMemoireNode = new DefaultMutableTreeNode("Lire");
+        modifyMemoireNode = new DefaultMutableTreeNode("Modifier");
+        deleteMemoireNode = new DefaultMutableTreeNode("Supprimer");
+
+        searchNode = new DefaultMutableTreeNode("Espace recherche");
+
+        searchChild = new DefaultMutableTreeNode("Rechercher");
+
+        profNode = new DefaultMutableTreeNode("Espace Enseignants");
+
+        createProfNode = new DefaultMutableTreeNode("Ajouter");
+        modifyProfNode = new DefaultMutableTreeNode("Modifier");
+        deleteProfNode = new DefaultMutableTreeNode("Supprimer");
+
         memoireNode.add(readMemoireNode);
-        memoireNode.add(modifyMemoireNode);
-        memoireNode.add(deleteMemoireNode);
 
-        DefaultMutableTreeNode searchNode = new DefaultMutableTreeNode("Espace recherche");
-
-        DefaultMutableTreeNode searchChild = new DefaultMutableTreeNode("Rechercher");
+        if(user instanceof Admin) {
+            memoireNode.add(createMemoireNode);
+            memoireNode.add(modifyMemoireNode);
+            memoireNode.add(deleteMemoireNode);
+        }
 
         searchNode.add(searchChild);
 
-        DefaultMutableTreeNode profNode = new DefaultMutableTreeNode("Espace Enseignants");
-
-        DefaultMutableTreeNode createProfNode = new DefaultMutableTreeNode("Ajouter");
-        DefaultMutableTreeNode modifyProfNode = new DefaultMutableTreeNode("Modifier");
-        DefaultMutableTreeNode deleteProfNode = new DefaultMutableTreeNode("Supprimer");
-
-        profNode.add(createProfNode);
-        profNode.add(modifyProfNode);
-        profNode.add(deleteProfNode);
-
         this.add(memoireNode);
         this.add(searchNode);
-        this.add(profNode);
+
+        if(user instanceof Admin) {
+            profNode.add(createProfNode);
+            profNode.add(modifyProfNode);
+            profNode.add(deleteProfNode);
+
+            this.add(profNode);
+        }
     }
 }

@@ -3,6 +3,7 @@ package MyThesis;
 import Components.InlineField;
 import Components.MemoireCard;
 import Components.MemoirePanel;
+import Components.SearchPanel;
 import Models.Memoire;
 import Models.Speciality;
 import Models.Student;
@@ -18,12 +19,11 @@ public class MainContent extends JPanel {
 
     User user;
 
-    MainContent() {
+    MainContent(User user) {
+        this.user = user;
         this.setPreferredSize(new Dimension(200, 200));
         this.setBackground(Color.lightGray);
         this.setBorder(BorderFactory.createTitledBorder("Espace principal "));
-
-        user = new Student(342L, "Mehdid", "Samy Abderraouf",Speciality.Informatics);
     }
     //hey samy
 
@@ -144,45 +144,13 @@ public class MainContent extends JPanel {
                     this.setLayout(new GridLayout(2, 1));
                 }
                 case "Rechercher" -> {
-                    searchMemoireBuild();
+                    add(new SearchPanel(user));
                 }
                 default -> {
                 }
             }
         });
     }
-
-     void searchMemoireBuild() {
-         JTextField query = new JTextField(10);
-
-         query.addKeyListener(new KeyListener() {
-             @Override
-             public void keyTyped(KeyEvent e) {
-                 // TODO: - Perform search call
-                 System.out.println("search for: " + query.getText());
-                 Memoire[] memoires = user.getMemoires(query.getText());
-
-                 reinit(() -> {
-                     setLayout(new BoxLayout(MainContent.this, BoxLayout.Y_AXIS));
-                     for (Memoire memoire : memoires) {
-                         add(new MemoireCard(memoire));
-                     }
-                 });
-             }
-
-             @Override
-             public void keyPressed(KeyEvent e) {
-                 //
-             }
-
-             @Override
-             public void keyReleased(KeyEvent e) {
-                 //
-             }
-         });
-
-         this.add(query);
-     }
 
     void reinit(BuildCallBack callBack) {
         this.removeAll();
