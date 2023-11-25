@@ -10,11 +10,11 @@ public class Admin extends User {
     public void createMemoire(String title, Long professorId, int date, Long[] studentsIds, Level level, String resume, String pdfUrl) throws Exception {
         DBConnector.createMemoire(title, professorId, date, studentsIds, level, resume, pdfUrl);
     }
-    public void updateMemoire(Memoire memoire) {
-        // TODO implement here
+    public void updateMemoire(int cote, String title, Long professorId, int date, Long[] studentsIds, Level level, String resume, String pdfUrl) throws Exception {
+        DBConnector.updateMemoire(cote, title, professorId, date, studentsIds, level, resume, pdfUrl);
     }
-    public void deleteMemoire(int id) {
-        // TODO implement here
+    public void deleteMemoire(int cote) throws Exception {
+        DBConnector.deleteMemoire(cote);
     }
 
     public static Admin admin = new Admin(978L, "Admin", "Admin");

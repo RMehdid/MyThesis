@@ -10,7 +10,6 @@ public class DBConnector {
     private static final String JDBC_URL = "jdbc:mysql://localhost:8889/my_thesis";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "mysql@123";
-
     public static Memoire getMemoire(int cote) throws Exception {
         Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
 
@@ -26,10 +25,9 @@ public class DBConnector {
             String title = resultSet.getString("title");
             Professor professor = getProfessor(resultSet.getLong("professor_id"));
 
-
             List<Student> students = new ArrayList<>();
 
-            for (Long studentId: getStudentsFromMemoire(coteM)) {
+            for (Long studentId: getStudentsFromMemoire(connection, coteM)) {
                 students.add(getStudent(studentId));
             }
 
@@ -53,8 +51,7 @@ public class DBConnector {
             throw new IllegalArgumentException("Memoire not found for cote: " + cote);
         }
     }
-
-    static Professor getProfessor(Long id) throws SQLException {
+    static Professor getProfessor(long id) throws SQLException {
         Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
 
         String query = "SELECT * FROM Professor where id = ?";
@@ -81,8 +78,7 @@ public class DBConnector {
             throw new IllegalArgumentException("Professor not found for id: " + id);
         }
     }
-
-    static Student getStudent(Long id) throws Exception {
+    static Student getStudent(long id) throws Exception {
         Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
 
         String query = "SELECT * FROM Student where id = ?";
@@ -109,10 +105,7 @@ public class DBConnector {
             throw new IllegalArgumentException("Student not found for id: " + id);
         }
     }
-
-    static Long[] getStudentsFromMemoire(int memoireId) throws Exception {
-        Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
-
+    static Long[] getStudentsFromMemoire(Connection connection, int memoireId) throws Exception {
         String query = "SELECT student_id FROM StudentMemoire where memoire_id = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -125,16 +118,10 @@ public class DBConnector {
         while (resultSet.next()) {
             studentIds.add(resultSet.getLong("student_id"));
         }
-        Long[] resultArray = studentIds.toArray(new Long[0]);
 
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
-
-        return resultArray;
+        return studentIds.toArray(new Long[0]);
     }
-
-    public static void createMemoire(String title, Long professorId, int date, Long[] studentsIds, Level level, String resume, String pdfUrl) throws Exception {
+    public static void createMemoire(String title, long professorId, int date, Long[] studentsIds, Level level, String resume, String pdfUrl) throws Exception {
         Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
 
         String query = "INSERT INTO Memoire (title, professor_id, date, level, resume, pdf_url) VALUES (?, ?, ?, ?, ?, ?)";
@@ -156,14 +143,15 @@ public class DBConnector {
             int memoireId = generatedKeys.getInt(1);
 
             for (Long studentId: studentsIds) {
-                linkStudentMemoire(memoireId, studentId);
+                linkStudentMemoire(connection, memoireId, studentId);
             }
         }
+
+        generatedKeys.close();
+        preparedStatement.close();
+        connection.close();
     }
-
-    static void linkStudentMemoire(int memoireId, Long studentId) throws SQLException {
-        Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
-
+    static void linkStudentMemoire(Connection connection, int memoireId, long studentId) throws SQLException {
         String query = "INSERT INTO StudentMemoire (student_id, memoire_id) VALUES (?, ?)";
 
         PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -172,5 +160,53 @@ public class DBConnector {
         preparedStatement.setInt(2, memoireId);
 
         preparedStatement.executeUpdate();
+    }
+    public static void updateMemoire(int cote, String title, long professorId, int date, Long[] studentsIds, Level level, String resume, String pdfUrl) throws Exception {
+        Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+
+        String query = "UPDATE Memoire SET (title, professor_id, date, level, resume, pdf_url) VALUES (?, ?, ?, ?, ?, ?) where cote = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        preparedStatement.setString(1, title);
+        preparedStatement.setLong(2, professorId);
+        preparedStatement.setInt(3, date);
+        preparedStatement.setString(4, level.toString());
+        preparedStatement.setString(5, resume);
+        preparedStatement.setString(6, pdfUrl);
+        preparedStatement.setInt(7, cote);
+
+        preparedStatement.executeUpdate();
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            int memoireId = resultSet.getInt(1);
+
+            for (Long studentId: studentsIds) {
+                linkStudentMemoire(connection, memoireId, studentId);
+            }
+        }
+
+        resultSet.close();
+        preparedStatement.close();
+        connection.close();
+    }
+    public static void deleteMemoire(int cote) throws Exception {
+        Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+
+        String query = "DELETE FROM Memoire where cote = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        preparedStatement.setInt(1, cote);
+
+        preparedStatement.executeUpdate();
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        resultSet.close();
+        preparedStatement.close();
+        connection.close();
     }
 }

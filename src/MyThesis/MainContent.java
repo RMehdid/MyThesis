@@ -115,8 +115,8 @@ public class MainContent extends JPanel {
     }
 
     void getMemoirePanel(IdCallBack callBack) {
-        InlineField idField = new InlineField("Id de memoire: ");
-        JButton getIdButton = new JButton("confirmer");
+        InlineField idField = new InlineField("Memoire id: ");
+        JButton getIdButton = new JButton("confirm");
         getIdButton.addActionListener(e -> {
             try{
                 Memoire memoire = user.readMemoire(Integer.parseInt(idField.getText()));

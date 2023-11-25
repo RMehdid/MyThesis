@@ -15,8 +15,8 @@ import java.util.List;
 public class MemoirePanel extends JPanel implements ActionListener {
 
     private final User user;
-
     private final CallBack callBack;
+    private final MethodWithMemoire method;
 
     private InlineField title;
     private InlineField prof;
@@ -38,6 +38,7 @@ public class MemoirePanel extends JPanel implements ActionListener {
     public MemoirePanel(User user, MethodWithMemoire method, CallBack callBack) {
         this.user = user;
         this.callBack = callBack;
+        this.method = method;
         setLayout();
 
         switch (method.method) {
@@ -200,6 +201,17 @@ public class MemoirePanel extends JPanel implements ActionListener {
     public void actionPerformed(@NotNull ActionEvent e) {
         if (e.getSource() == confirm) {
             if(user instanceof Admin) {
+                if(method.method == Method.DELETE) {
+                    try {
+                        ((Admin) user).deleteMemoire(method.memoire.cote);
+
+                        this.callBack.onSuccess();
+                    } catch (Exception error) {
+                        JOptionPane.showMessageDialog(MemoirePanel.this, error.getMessage());
+                        this.callBack.onFailure();
+                    }
+                }
+
                 String title = this.title.getText();
                 Long professorId = Long.valueOf(this.prof.getText());
                 int date = Integer.parseInt(this.year.getText());
@@ -221,8 +233,15 @@ public class MemoirePanel extends JPanel implements ActionListener {
                 String resume = this.resumeField.getText();
 
                 try {
-                    ((Admin) user).createMemoire(title, professorId, date, studentsIdsArray, level, resume, pdfPath);
+
+                    if(method.method == Method.CREATE) {
+                        ((Admin) user).createMemoire(title, professorId, date, studentsIdsArray, level, resume, pdfPath);
+                    } else if(method.method == Method.UPDATE) {
+                        ((Admin) user).updateMemoire(method.memoire.cote, title, professorId, date, studentsIdsArray, level, resume, pdfPath);
+                    }
+
                     this.callBack.onSuccess();
+
                 } catch (Exception error) {
                     JOptionPane.showMessageDialog(MemoirePanel.this, error.getMessage());
                     this.callBack.onFailure();
