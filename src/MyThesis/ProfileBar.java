@@ -42,7 +42,7 @@ public class ProfileBar extends JPanel implements ActionListener {
         add(iconLabel);
 
         if (isModifying) {
-            setLayout(new GridLayout(6, 1));
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             setModifyingComponents(user);
             add(familyNameField);
             add(firstnameField);
@@ -52,7 +52,7 @@ public class ProfileBar extends JPanel implements ActionListener {
             add(cancelButton);
 
         } else {
-            setLayout(new GridLayout(6, 1));
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             setNotModifyingComponents(user);
             add(iconLabel);
             add(fullname);

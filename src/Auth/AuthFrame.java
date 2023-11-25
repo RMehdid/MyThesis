@@ -26,11 +26,12 @@ public class AuthFrame extends JFrame implements ActionListener {
         setLayoutManager();
         addComponentsToContainer();
         addActionEvent();
+        pack();
     }
 
     public void setLayoutManager() {
-        container.setLayout(new GridLayout(4, 1));
-        container.setSize(370, 400);
+        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+        container.setSize(370, 300);
     }
     public void addComponentsToContainer() {
         container.add(matriculeField);
@@ -67,7 +68,6 @@ public class AuthFrame extends JFrame implements ActionListener {
             SignupFrame frame = new SignupFrame();
             frame.setTitle("Signup Form");
             frame.setVisible(true);
-            frame.setBounds(10, 10, 370, 600);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setResizable(false);
         }

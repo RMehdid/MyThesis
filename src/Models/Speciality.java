@@ -24,7 +24,7 @@ public enum Speciality {
                 return "Chemistry";
             }
             case Physics -> {
-                return "Physique";
+                return "Physics";
             }
             case Biologie -> {
                 return "Biologie";

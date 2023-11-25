@@ -1,19 +1,14 @@
 package MyThesis;
 
 import Components.InlineField;
-import Components.MemoireCard;
 import Components.MemoirePanel;
 import Components.SearchPanel;
 import Models.Memoire;
-import Models.Speciality;
-import Models.Student;
 import Models.User;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public class MainContent extends JPanel {
 
@@ -33,8 +28,8 @@ public class MainContent extends JPanel {
             this.setBorder(BorderFactory.createTitledBorder(selectedNode.toString()));
 
             switch (selectedNode.toString()) {
-                case "Ajouter" -> {
-                    MemoirePanel createMemoire = new MemoirePanel(new MemoirePanel.CallBack() {
+                case "Ajouter" -> reinit(() -> {
+                    MemoirePanel createMemoire = new MemoirePanel(user, new MemoirePanel.CallBack() {
                         @Override
                         public void onSuccess() {
                             buildContent(selectedNode);
@@ -49,99 +44,114 @@ public class MainContent extends JPanel {
                         }
                     });
                     this.add(createMemoire);
-                }
+                });
                 case "Lire" -> {
+                    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
                     InlineField readField = new InlineField("Id de memoire a lire: ");
                     JButton getIdReadButton = new JButton("confirmer");
                     getIdReadButton.addActionListener(e -> {
-                        Memoire memoire = user.readMemoire(Integer.parseInt(readField.getText()));
+                        Memoire memoire = null;
+                        try {
+                            memoire = user.readMemoire(Integer.parseInt(readField.getText()));
+                            Memoire finalMemoire = memoire;
+                            reinit(() -> {
+                                MemoirePanel readMemoire = new MemoirePanel(user, finalMemoire, true, new MemoirePanel.CallBack() {
+                                    @Override
+                                    public void onSuccess() {
+                                        buildContent(selectedNode);
+                                    }
 
-                        reinit(() -> {
-                            MemoirePanel readMemoire = new MemoirePanel(memoire, true, new MemoirePanel.CallBack() {
-                                @Override
-                                public void onSuccess() {
-                                    buildContent(selectedNode);
-                                }
+                                    @Override
+                                    public void onFailure() {
+                                        buildContent(selectedNode);
+                                    }
 
-                                @Override
-                                public void onFailure() {
-                                    buildContent(selectedNode);
-                                }
+                                    @Override
+                                    public void onCancel() {
+                                        buildContent(selectedNode);
+                                    }
+                                });
 
-                                @Override
-                                public void onCancel() {
-                                    buildContent(selectedNode);
-                                }
+                                this.add(readMemoire);
                             });
-
-                            this.add(readMemoire);
-                        });
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
                     });
                     this.add(readField);
                     this.add(getIdReadButton);
-                    this.setLayout(new GridLayout(2, 1));
                 }
                 case "Modifier" -> {
                     InlineField modifyField = new InlineField("Id de memoire a modifier: ");
                     JButton getIdModifyButton = new JButton("confirmer");
                     getIdModifyButton.addActionListener(e -> {
-                        Memoire memoire = user.readMemoire(Integer.parseInt(modifyField.getText()));
+                        Memoire memoire = null;
+                        try {
+                            memoire = user.readMemoire(Integer.parseInt(modifyField.getText()));
+                            Memoire finalMemoire = memoire;
+                            reinit(() -> {
+                                MemoirePanel modifyMemoire = new MemoirePanel(user, finalMemoire, false, new MemoirePanel.CallBack() {
+                                    @Override
+                                    public void onSuccess() {
+                                        buildContent(selectedNode);
+                                    }
 
-                        reinit(() -> {
-                            MemoirePanel modifyMemoire = new MemoirePanel(memoire, false, new MemoirePanel.CallBack() {
-                                @Override
-                                public void onSuccess() {
-                                    buildContent(selectedNode);
-                                }
+                                    @Override
+                                    public void onFailure() {
+                                        buildContent(selectedNode);
+                                    }
 
-                                @Override
-                                public void onFailure() {
-                                    buildContent(selectedNode);
-                                }
+                                    @Override
+                                    public void onCancel() {
+                                        buildContent(selectedNode);
+                                    }
+                                });
 
-                                @Override
-                                public void onCancel() {
-                                    buildContent(selectedNode);
-                                }
+                                this.add(modifyMemoire);
                             });
-
-                            this.add(modifyMemoire);
-                        });
+                        } catch (Exception error) {
+                            JOptionPane.showMessageDialog(this, error.getLocalizedMessage());
+                        }
                     });
                     this.add(modifyField);
                     this.add(getIdModifyButton);
-                    this.setLayout(new GridLayout(2, 1));
+                    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
                 }
                 case "Supprimer" -> {
                     InlineField deleteField = new InlineField("Id de memoire a supprimer: ");
                     JButton getIdDeleteButton = new JButton("confirmer");
                     getIdDeleteButton.addActionListener(e -> {
-                        Memoire memoire = user.readMemoire(Integer.parseInt(deleteField.getText()));
+                        Memoire memoire = null;
+                        try {
+                            memoire = user.readMemoire(Integer.parseInt(deleteField.getText()));
+                            Memoire finalMemoire = memoire;
+                            reinit(() -> {
+                                MemoirePanel deleteMemoire = new MemoirePanel(user, finalMemoire, true, new MemoirePanel.CallBack() {
+                                    @Override
+                                    public void onSuccess() {
+                                        buildContent(selectedNode);
+                                    }
 
-                        reinit(() -> {
-                            MemoirePanel deleteMemoire = new MemoirePanel(memoire, true, new MemoirePanel.CallBack() {
-                                @Override
-                                public void onSuccess() {
-                                    buildContent(selectedNode);
-                                }
+                                    @Override
+                                    public void onFailure() {
+                                        buildContent(selectedNode);
+                                    }
 
-                                @Override
-                                public void onFailure() {
-                                    buildContent(selectedNode);
-                                }
+                                    @Override
+                                    public void onCancel() {
+                                        buildContent(selectedNode);
+                                    }
+                                });
 
-                                @Override
-                                public void onCancel() {
-                                    buildContent(selectedNode);
-                                }
+                                this.add(deleteMemoire);
                             });
-
-                            this.add(deleteMemoire);
-                        });
+                        } catch (Exception error) {
+                            JOptionPane.showMessageDialog(this, error.getLocalizedMessage());
+                        }
                     });
                     this.add(deleteField);
                     this.add(getIdDeleteButton);
-                    this.setLayout(new GridLayout(2, 1));
+                    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
                 }
                 case "Rechercher" -> {
                     add(new SearchPanel(user));

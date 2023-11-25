@@ -18,7 +18,7 @@ public class Memoire {
     public String resume;
     public String pdfUrl;
 
-    public Memoire(int cote, String title, Professor professor, int date, Level level, Student[] authors, String resume, String pdfUrl) {
+    public Memoire(int cote, String title, Professor professor, Student[] authors, int date, Level level, String resume, String pdfUrl) {
         this.cote = cote;
         this.title = title;
         this.professor = professor;
@@ -33,11 +33,11 @@ public class Memoire {
             837422,
             "AI",
             Professor.professor,
-            2020,
-            Level.Bachelor,
             new Student[]{
                     Student.student, Student.student, Student.student
             },
+            2020,
+            Level.Bachelor,
             "djughvpiaufgh ;fuihgupifvg iugrhfpiwufgwf iurfgaiufg",
             "/Users/raynex/Desktop/SI/S6/PFE/Preparer\\ soutenance.pdf"
     );

@@ -1,5 +1,7 @@
 package Models;
 
+import Service.DBConnector;
+
 /**
  * 
  */
@@ -14,9 +16,9 @@ public class User {
         this.prenom = prenom;
     }
 
-    public Memoire readMemoire(int id) {
-        // TODO implement here
-        return Memoire.memoireExm;
+    public Memoire readMemoire(int id) throws Exception {
+
+        return DBConnector.getMemoire(id);
     }
 
     public Memoire[] getMemoires(String query) {

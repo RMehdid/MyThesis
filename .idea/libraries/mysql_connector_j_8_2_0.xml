@@ -2,6 +2,7 @@
   <library name="mysql-connector-j-8.2.0">
     <CLASSES>
       <root url="jar://$USER_HOME$/Downloads/mysql-connector-j-8.2.0/mysql-connector-j-8.2.0.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/pdfbox-app-3.0.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
