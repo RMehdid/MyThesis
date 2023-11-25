@@ -17,7 +17,6 @@ public class User {
     }
 
     public Memoire readMemoire(int id) throws Exception {
-
         return DBConnector.getMemoire(id);
     }
 

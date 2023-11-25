@@ -1,6 +1,7 @@
 package Components;
 
 import Models.*;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,53 +14,110 @@ import java.util.List;
 
 public class MemoirePanel extends JPanel implements ActionListener {
 
-    User user;
+    private final User user;
 
-    InlineField title;
-    InlineField prof;
-    InlineField year;
+    private final CallBack callBack;
 
-    InlineField author1;
-    InlineField author2;
-    InlineField author3;
+    private InlineField title;
+    private InlineField prof;
+    private InlineField year;
+    private InlineField author1;
+    private InlineField author2;
+    private InlineField author3;
+    private JComboBox<Level> levels;
+    private ResumeField resumeField;
+    private final JPanel pdfPanel = new JPanel();
+    private final JButton choosePdfButton = new JButton("choose pdf");
+    private final JButton showPdf = new JButton("show pdf");
+    private final JPanel buttonsPanel = new JPanel();
+    private final JButton confirm = new JButton("confirm");
+    private final JButton cancel = new JButton("cancel");;
 
-    JComboBox<Level> levels;
+    private String pdfPath;
 
-    ResumeField resumeField;
-
-    String pdfPath;
-
-    JButton confirm;
-    JButton cancel;
-
-
-    public MemoirePanel(User user, Memoire memoire, boolean disabled, CallBack callBack) {
+    public MemoirePanel(User user, MethodWithMemoire method, CallBack callBack) {
         this.user = user;
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.callBack = callBack;
+        setLayout();
+
+        switch (method.method) {
+            case CREATE -> setCreateMemoire();
+            case READ -> setReadMemoire(method.memoire);
+            case UPDATE -> setUpdateMemoire(method.memoire);
+            case DELETE -> setDeleteMemoire(method.memoire);
+        }
+
+        addComponents();
+        setActionListeners();
+    }
+
+    void setCreateMemoire() {
+        title = new InlineField("Titre: ");
+        prof = new InlineField("Encadreur: ");
+        year = new InlineField("Annee: ");
+        author1 = new InlineField("Auteur 1: ");
+        author2 = new InlineField("Auteur 2: ");
+        author3 = new InlineField("Auteur 3: ");
+
+        levels = new JComboBox<>(Level.values());
+
+        resumeField = new ResumeField("Resume");
+    }
+
+    void setReadMemoire(@NotNull Memoire memoire) {
+        boolean disabled = true;
+        pdfPath = memoire.pdfUrl;
 
         title = new InlineField("Titre: ", memoire.title, disabled);
-
         prof = new InlineField("Encadreur: ", memoire.professor.nom + " " + memoire.professor.prenom, disabled);
-
         year = new InlineField("Annee: ",  Integer.toString(memoire.date), disabled);
 
-        this.add(title);
-        this.add(prof);
-        this.add(year);
-
-        if (memoire.authors.length > 1) {
-            author3 = new InlineField("Auteur 1: ", memoire.authors[0].id, memoire.authors[0].nom + " " + memoire.authors[0].prenom, disabled);
+        if (memoire.authors.length >= 1) {
+            author1 = new InlineField("Auteur 1: ", memoire.authors[0].nom + " " + memoire.authors[0].prenom, disabled);
         } else {
             author1 = new InlineField("Auteur 1: ", "", disabled);
         }
 
-        if (memoire.authors.length > 2) {
-            author3 = new InlineField("Auteur 2: ", memoire.authors[1].id, memoire.authors[1].nom + " " + memoire.authors[1].prenom, disabled);
+        if (memoire.authors.length >= 2) {
+            author2 = new InlineField("Auteur 2: ",memoire.authors[1].nom + " " + memoire.authors[1].prenom, disabled);
         } else {
             author2 = new InlineField("Auteur 2: ", "", disabled);
         }
 
-        if (memoire.authors.length > 3) {
+        if (memoire.authors.length >= 3) {
+            author3 = new InlineField("Auteur 3: ", memoire.authors[2].nom + " " + memoire.authors[2].prenom, disabled);
+        } else {
+            author3 = new InlineField("Auteur 3: ", "", disabled);
+        }
+
+        levels = new JComboBox<>(Level.values());
+        levels.setSelectedItem(memoire.level);
+        levels.setEnabled(!disabled);
+
+        resumeField = new ResumeField("Resume", memoire.resume, disabled);
+    }
+
+    void setUpdateMemoire(@NotNull Memoire memoire) {
+        boolean disabled = false;
+        pdfPath = memoire.pdfUrl;
+
+        title = new InlineField("Titre: ", memoire.title, disabled);
+        prof = new InlineField("Encadreur: ", memoire.professor.id, memoire.professor.nom + " " + memoire.professor.prenom, disabled);
+        year = new InlineField("Annee: ",  Integer.toString(memoire.date), disabled);
+
+        if (memoire.authors.length >= 1) {
+            author1 = new InlineField("Auteur 1: ", memoire.authors[0].id, memoire.authors[0].nom + " " + memoire.authors[0].prenom, disabled);
+        } else {
+            author1 = new InlineField("Auteur 1: ", "", disabled);
+        }
+
+        if (memoire.authors.length >= 2) {
+            author2 = new InlineField("Auteur 2: ", memoire.authors[1].id, memoire.authors[1].nom + " " + memoire.authors[1].prenom, disabled);
+        } else {
+            author2 = new InlineField("Auteur 2: ", "", disabled);
+        }
+
+        if (memoire.authors.length >= 3) {
             author3 = new InlineField("Auteur 3: ", memoire.authors[2].id, memoire.authors[2].nom + " " + memoire.authors[2].prenom, disabled);
         } else {
             author3 = new InlineField("Auteur 3: ", "", disabled);
@@ -70,125 +128,48 @@ public class MemoirePanel extends JPanel implements ActionListener {
         levels.setEnabled(!disabled);
 
         resumeField = new ResumeField("Resume", memoire.resume, disabled);
-
-        JPanel pdfPanel = new JPanel();
-        JLabel pdfFileLabel = new JLabel();
-
-        JButton choosePdfButton = new JButton("choose pdf");
-        choosePdfButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-
-            int result = fileChooser.showOpenDialog(MemoirePanel.this);
-
-            if (result == JFileChooser.APPROVE_OPTION) {
-
-                java.io.File selectedFile = fileChooser.getSelectedFile();
-
-                pdfPath = selectedFile.getAbsolutePath();
-            }
-        });
-
-        JButton showPdf = new JButton("show pdf");
-        showPdf.addActionListener(e -> {
-
-            if (!pdfPath.isEmpty()) {
-                openPdf(pdfPath);
-            } else {
-                JOptionPane.showMessageDialog(MemoirePanel.this, "Please choose a PDF file first.");
-            }
-        });
-
-        pdfPanel.setLayout(new FlowLayout());
-        pdfPanel.add(pdfFileLabel);
-        pdfPanel.add(choosePdfButton);
-        pdfPanel.add(showPdf);
-
-        this.add(author1);
-        this.add(author2);
-        this.add(author3);
-        this.add(levels);
-        this.add(resumeField);
-        this.add(pdfPanel);
-
-        JPanel buttonsPanel = new JPanel();
-        confirm = new JButton("confirm");
-        cancel = new JButton("annuler");
-
-        buttonsPanel.setLayout(new FlowLayout());
-        buttonsPanel.add(confirm);
-        buttonsPanel.add(cancel);
-
-        confirm.addActionListener(this);
-
-        cancel.addActionListener(this);
-
-        this.add(buttonsPanel);
     }
 
-    public MemoirePanel(User user, CallBack callBack) {
-        this.user = user;
+    void setDeleteMemoire(@NotNull Memoire memoire) {
+        boolean disabled = true;
+        pdfPath = memoire.pdfUrl;
 
-        title = new InlineField("Titre: ");
+        title = new InlineField("Titre: ", memoire.title, disabled);
+        prof = new InlineField("Encadreur: ", memoire.professor.nom + " " + memoire.professor.prenom, disabled);
+        year = new InlineField("Annee: ",  Integer.toString(memoire.date), disabled);
 
-        prof = new InlineField("Encadreur: ");
+        if (memoire.authors.length >= 1) {
+            author1 = new InlineField("Auteur 1: ", memoire.authors[0].nom + " " + memoire.authors[0].prenom, disabled);
+        } else {
+            author1 = new InlineField("Auteur 1: ", "", disabled);
+        }
 
-        year = new InlineField("Annee: ");
+        if (memoire.authors.length >= 2) {
+            author2 = new InlineField("Auteur 2: ", memoire.authors[1].nom + " " + memoire.authors[1].prenom, disabled);
+        } else {
+            author2 = new InlineField("Auteur 2: ", "", disabled);
+        }
 
-        author1 = new InlineField("Auteur 1: ");
-        author2 = new InlineField("Auteur 2: ");
-        author3 = new InlineField("Auteur 3: ");
+        if (memoire.authors.length >= 3) {
+            author3 = new InlineField("Auteur 3: ",memoire.authors[2].nom + " " + memoire.authors[2].prenom, disabled);
+        } else {
+            author3 = new InlineField("Auteur 3: ", "", disabled);
+        }
 
         levels = new JComboBox<>(Level.values());
+        levels.setSelectedItem(memoire.level);
+        levels.setEnabled(!disabled);
 
-        resumeField = new ResumeField("Resume");
+        resumeField = new ResumeField("Resume", memoire.resume, disabled);
+    }
 
-        JPanel pdfPanel = new JPanel();
+    private void setLayout() {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
         pdfPanel.setLayout(new FlowLayout());
-        JLabel pdfFileLabel = new JLabel();
+    }
 
-        JButton choosePdfButton = new JButton("choose pdf");
-        choosePdfButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-
-            int result = fileChooser.showOpenDialog(MemoirePanel.this);
-
-            if (result == JFileChooser.APPROVE_OPTION) {
-
-                java.io.File selectedFile = fileChooser.getSelectedFile();
-
-                pdfPath = selectedFile.getAbsolutePath();
-            }
-        });
-
-        JButton showPdf = new JButton("show pdf");
-        showPdf.addActionListener(e -> {
-
-            if (!pdfPath.isEmpty()) {
-                openPdf(pdfPath);
-            } else {
-                JOptionPane.showMessageDialog(MemoirePanel.this, "Please choose a PDF file first.");
-            }
-        });
-
-        pdfPanel.add(pdfFileLabel);
-        pdfPanel.add(choosePdfButton);
-        pdfPanel.add(showPdf);
-
-
-
-        JPanel buttonsPanel = new JPanel();
-        confirm = new JButton("confirm");
-        cancel = new JButton("annuler");
-
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
-        buttonsPanel.add(confirm);
-        buttonsPanel.add(cancel);
-
-        confirm.addActionListener(this);
-        cancel.addActionListener(this);
-
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
+    private void addComponents() {
         this.add(title);
         this.add(prof);
         this.add(year);
@@ -197,12 +178,26 @@ public class MemoirePanel extends JPanel implements ActionListener {
         this.add(author3);
         this.add(levels);
         this.add(resumeField);
+
+        pdfPanel.add(choosePdfButton);
+        pdfPanel.add(showPdf);
+
+        buttonsPanel.add(cancel);
+        buttonsPanel.add(confirm);
+
         this.add(pdfPanel);
         this.add(buttonsPanel);
     }
 
+    private void setActionListeners() {
+        choosePdfButton.addActionListener(this);
+        showPdf.addActionListener(this);
+        confirm.addActionListener(this);
+        cancel.addActionListener(this);
+    }
+
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(@NotNull ActionEvent e) {
         if (e.getSource() == confirm) {
             if(user instanceof Admin) {
                 String title = this.title.getText();
@@ -227,9 +222,30 @@ public class MemoirePanel extends JPanel implements ActionListener {
 
                 try {
                     ((Admin) user).createMemoire(title, professorId, date, studentsIdsArray, level, resume, pdfPath);
+                    this.callBack.onSuccess();
                 } catch (Exception error) {
                     JOptionPane.showMessageDialog(MemoirePanel.this, error.getMessage());
+                    this.callBack.onFailure();
                 }
+            }
+        } else if(e.getSource() == cancel) {
+            this.callBack.onCancel();
+        } else if(e.getSource() == choosePdfButton) {
+            JFileChooser fileChooser = new JFileChooser();
+
+            int result = fileChooser.showOpenDialog(MemoirePanel.this);
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+
+                java.io.File selectedFile = fileChooser.getSelectedFile();
+
+                pdfPath = selectedFile.getAbsolutePath();
+            }
+        } else if(e.getSource() == showPdf) {
+            if (!pdfPath.isEmpty()) {
+                openPdf(pdfPath);
+            } else {
+                JOptionPane.showMessageDialog(MemoirePanel.this, "Please choose a PDF file first.");
             }
         }
     }
