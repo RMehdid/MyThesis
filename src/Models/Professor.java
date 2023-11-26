@@ -13,3 +13,4 @@ public class Professor extends User {
 
     static Professor professor = new Professor(3483L, "Rezzoug", "Hakim", Speciality.Informatics);
 }
+

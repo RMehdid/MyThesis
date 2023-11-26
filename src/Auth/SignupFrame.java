@@ -84,7 +84,7 @@ public class SignupFrame extends JFrame implements ActionListener {
 
     private void register(long id, String password) throws Exception {
 
-        if (!DBConnector.isUsernameExists(id)) {
+        if (DBConnector.isIdValid(id)) {
             if (DBConnector.registerLogin(id, password, "Student")) {
                 Student student = new Student(id, familyNamePanel.getText(), firstnamePanel.getText(), Speciality.valueOf(specialityField.getText()));
                 if(DBConnector.register(student)) {

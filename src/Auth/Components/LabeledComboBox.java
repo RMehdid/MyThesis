@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 public class LabeledComboBox<T> extends JPanel {
     JComboBox<T> comboBox;
@@ -21,9 +22,17 @@ public class LabeledComboBox<T> extends JPanel {
 
     public String getText() {
         if(comboBox != null) {
-            return comboBox.getSelectedItem().toString();
+            return Objects.requireNonNull(comboBox.getSelectedItem()).toString();
         }
 
         return "error";
+    }
+
+    public void setSelectedItem(T value) {
+        this.comboBox.setSelectedItem(value);
+    }
+
+    public T getSelectedItem() {
+        return (T) this.comboBox.getSelectedItem();
     }
 }

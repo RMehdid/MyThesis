@@ -2,11 +2,10 @@ package MyThesis;
 
 import Components.InlineField;
 import Components.MemoirePanel;
+import Components.ProfessorPanel;
 import Components.SearchPanel;
-import Models.Memoire;
-import Models.Method;
-import Models.MethodWithMemoire;
-import Models.User;
+import Models.*;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -110,11 +109,70 @@ public class MainContent extends JPanel {
                 case "Rechercher" -> {
                     add(new SearchPanel(user));
                 }
+                case "Ajouter Enseignant" -> {
+                    ProfessorPanel createProfessor = new ProfessorPanel(user, new MethodWithProfessor(Method.CREATE, null), new ProfessorPanel.CallBack() {
+                        @Override
+                        public void onSuccess() {
+                            buildContent(selectedNode);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            buildContent(selectedNode);
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            buildContent(selectedNode);
+                        }
+                    });
+                    this.add(createProfessor);
+                }
+                case "Modifier Enseignant" -> getProfessorPanel(professor -> reinit(() -> {
+                    ProfessorPanel modifyProfessor = new ProfessorPanel(user, new MethodWithProfessor(Method.UPDATE, professor), new ProfessorPanel.CallBack() {
+                        @Override
+                        public void onSuccess() {
+                            buildContent(selectedNode);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            buildContent(selectedNode);
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            buildContent(selectedNode);
+                        }
+                    });
+
+                    this.add(modifyProfessor);
+                }));
+                case "Supprimer Enseignant" -> getProfessorPanel(professor -> reinit(() -> {
+                    ProfessorPanel deleteProfessor = new ProfessorPanel(user, new MethodWithProfessor(Method.DELETE, professor), new ProfessorPanel.CallBack() {
+                        @Override
+                        public void onSuccess() {
+                            buildContent(selectedNode);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            buildContent(selectedNode);
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            buildContent(selectedNode);
+                        }
+                    });
+
+                    this.add(deleteProfessor);
+                }));
             }
         });
     }
 
-    void getMemoirePanel(IdCallBack callBack) {
+    void getMemoirePanel(IdMemoireCallBack callBack) {
         InlineField idField = new InlineField("Memoire id: ");
         JButton getIdButton = new JButton("confirm");
         getIdButton.addActionListener(e -> {
@@ -133,7 +191,26 @@ public class MainContent extends JPanel {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
-    void reinit(BuildCallBack callBack) {
+    void getProfessorPanel(IdProfessorCallBack callBack) {
+        InlineField idField = new InlineField("Professor id: ");
+        JButton getIdButton = new JButton("confirm");
+        getIdButton.addActionListener(e -> {
+            try{
+                Professor professor = ((Admin) user).getProfessor(Long.valueOf(idField.getText()));
+                if(professor != null) {
+                    callBack.next(professor);
+                }
+            } catch (Exception error) {
+                JOptionPane.showMessageDialog(this, error.getLocalizedMessage());
+            }
+        });
+
+        this.add(idField);
+        this.add(getIdButton);
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    }
+
+    void reinit(@NotNull BuildCallBack callBack) {
         this.removeAll();
 
         callBack.newBuild();
@@ -146,7 +223,11 @@ public class MainContent extends JPanel {
         void newBuild();
     }
 
-    interface IdCallBack {
+    interface IdMemoireCallBack {
         void next(Memoire memoire);
+    }
+
+    interface IdProfessorCallBack {
+        void next(Professor professor);
     }
 }

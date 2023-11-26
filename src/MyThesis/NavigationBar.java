@@ -34,9 +34,9 @@ public class NavigationBar extends DefaultMutableTreeNode {
 
         profNode = new DefaultMutableTreeNode("Espace Enseignants");
 
-        createProfNode = new DefaultMutableTreeNode("Ajouter");
-        modifyProfNode = new DefaultMutableTreeNode("Modifier");
-        deleteProfNode = new DefaultMutableTreeNode("Supprimer");
+        createProfNode = new DefaultMutableTreeNode("Ajouter Enseignant");
+        modifyProfNode = new DefaultMutableTreeNode("Modifier Enseignant");
+        deleteProfNode = new DefaultMutableTreeNode("Supprimer Enseignant");
 
         memoireNode.add(readMemoireNode);
 
