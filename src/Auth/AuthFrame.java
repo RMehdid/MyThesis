@@ -81,6 +81,7 @@ public class AuthFrame extends JFrame implements ActionListener {
     }
 
     private void login(Long id, String password) throws Exception {
+        dispose();
         switch (DBConnector.login(id, password)) {
             case "Student" -> {
                 Student student = DBConnector.getStudent(id);

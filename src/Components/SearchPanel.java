@@ -23,7 +23,7 @@ public class SearchPanel extends JPanel implements KeyListener {
 
     private void queryGetterBuilder() {
         JLabel label = new JLabel("Search for a memoire");
-        textField.setPreferredSize(new Dimension(300, 56));
+        textField.setPreferredSize(new Dimension(500, 56));
 
         textField.addKeyListener(this);
 
@@ -38,6 +38,10 @@ public class SearchPanel extends JPanel implements KeyListener {
             @Override
             protected Memoire[] doInBackground() {
                 try {
+                    if (textField.getText().isEmpty()){
+                        return new Memoire[0];
+                    }
+
                     return user.getMemoires(textField.getText());
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);

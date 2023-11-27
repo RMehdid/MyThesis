@@ -12,8 +12,8 @@ import java.awt.*;
 
 public class MyThesis extends JFrame implements TreeSelectionListener {
 
-    private JTree tree;
-    private MainContent mainContent;
+    private final JTree tree;
+    private final MainContent mainContent;
 
     public MyThesis(User user) {
         this.setLayout(new BorderLayout());
@@ -54,16 +54,11 @@ public class MyThesis extends JFrame implements TreeSelectionListener {
         this.add(bottomBar, BorderLayout.SOUTH);
         // --> Bottom Bar
 
-        setSize(800, 600);
+        setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        MyThesis frame = new MyThesis(Student.student);
-
-        frame.setVisible(true);
     }
 
     @Override
