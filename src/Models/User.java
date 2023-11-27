@@ -20,7 +20,7 @@ public class User {
         return DBConnector.getMemoire(id);
     }
 
-    public Memoire[] getMemoires(String query) {
-        return new Memoire[]{Memoire.memoireExm, Memoire.memoireExm, Memoire.memoireExm};
+    public Memoire[] getMemoires(String query) throws Exception {
+        return DBConnector.getMemoires(query);
     }
 }

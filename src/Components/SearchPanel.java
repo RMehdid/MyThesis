@@ -11,13 +11,17 @@ import java.awt.event.KeyListener;
 
 public class SearchPanel extends JPanel implements KeyListener {
 
+    User user;
     JTextField textField = new JTextField();
 
+    SearchResultPanel resultPanel;
+
     public SearchPanel(User user) {
-        idGetterBuilder();
+        this.user = user;
+        queryGetterBuilder();
     }
 
-    private void idGetterBuilder() {
+    private void queryGetterBuilder() {
         JLabel label = new JLabel("Search for a memoire");
         textField.setPreferredSize(new Dimension(300, 56));
 
@@ -30,14 +34,39 @@ public class SearchPanel extends JPanel implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        Memoire[] memoires = new Memoire[]{Memoire.memoireExm};
-        for (Memoire memoire : memoires) {
-            this.removeAll();
-            idGetterBuilder();
-            add(new MemoireCard(memoire));
-            revalidate();
-            repaint();
-        }
+        SwingWorker<Memoire[], Void> worker = new SwingWorker<>() {
+            @Override
+            protected Memoire[] doInBackground() {
+                try {
+                    return user.getMemoires(textField.getText());
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    Memoire[] memoires = get();
+
+                    if (resultPanel != null) {
+                        remove(resultPanel);
+                    }
+                    resultPanel = new SearchResultPanel(memoires);
+                    add(resultPanel);
+
+                    SwingUtilities.invokeLater(() -> {
+                        revalidate();
+                        repaint();
+                    });
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+
+        worker.execute();
     }
 
     @Override

@@ -69,6 +69,30 @@ public class DBConnector {
 
         return idExists;
     }
+    private static boolean professorExists(long id) throws Exception {
+        boolean idExists = false;
+
+        Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+
+        String query = "SELECT COUNT(*) FROM Professor WHERE id = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        preparedStatement.setString(1, String.valueOf(id));
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            int count = resultSet.getInt(1);
+            idExists = count > 0;
+        }
+
+        preparedStatement.close();
+        resultSet.close();
+        connection.close();
+
+        return idExists;
+    }
     @Contract("_ -> new")
     public static @NotNull Memoire getMemoire(int cote) throws Exception {
         Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
@@ -196,7 +220,12 @@ public class DBConnector {
         PreparedStatement preparedStatement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
 
         preparedStatement.setString(1, title);
-        preparedStatement.setLong(2, professorId);
+
+        if(professorExists(professorId)) {
+            preparedStatement.setLong(2, professorId);
+        } else {
+            throw new Exception("Professor with id: " + professorId + " does not exist");
+        }
         preparedStatement.setInt(3, date);
         preparedStatement.setString(4, level.toString());
         preparedStatement.setString(5, resume);
@@ -238,12 +267,18 @@ public class DBConnector {
 
         Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
 
+        savepoint = connection.setSavepoint();
+
         String query = "UPDATE Memoire SET title=?, professor_id=?, date=?, level=?, resume=?, pdf_url=? WHERE cote=?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(query);
 
         preparedStatement.setString(1, title);
-        preparedStatement.setLong(2, professorId);
+        if (professorExists(professorId)) {
+            preparedStatement.setLong(2, professorId);
+        } else {
+            throw new Exception("Professor with id: " + professorId + " does not exist");
+        }
         preparedStatement.setInt(3, date);
         preparedStatement.setString(4, level.toString());
         preparedStatement.setString(5, resume);
@@ -255,21 +290,28 @@ public class DBConnector {
         preparedStatement.close();
 
         if(!studentId1.left.equals(studentId1.right)) {
-            updateStudentMemoire(connection, cote, studentId1.left, studentId1.right);
+            if(studentExists(studentId1.right)) {
+                updateStudentMemoire(connection, cote, studentId1.left, studentId1.right);
+            } else {
+                connection.rollback(savepoint);
+                throw new Exception("Student with id: " + studentId1.right + " does not exist");
+            }
         }
         if(studentId2 != null) {
-            if (studentId2.left == null) {
-                linkStudentMemoire(connection, cote, studentId2.right);
-            } else if (!studentId2.left.equals(studentId2.right)) {
+            if(studentExists(studentId2.right)) {
                 updateStudentMemoire(connection, cote, studentId2.left, studentId2.right);
+            } else {
+                connection.rollback(savepoint);
+                throw new Exception("Student with id: " + studentId2.right + " does not exist");
             }
         }
 
         if(studentId3 != null) {
-            if (studentId3.left == null) {
-                linkStudentMemoire(connection, cote, studentId3.right);
-            } else if (!studentId3.left.equals(studentId3.right)) {
+            if(studentExists(studentId3.right)) {
                 updateStudentMemoire(connection, cote, studentId3.left, studentId3.right);
+            } else {
+                connection.rollback(savepoint);
+                throw new Exception("Student with id: " + studentId3.right + " does not exist");
             }
         }
 
@@ -374,5 +416,45 @@ public class DBConnector {
         preparedStatement.executeUpdate();
 
         preparedStatement.close();
+    }
+
+    public static Memoire @NotNull [] getMemoires(String query) throws Exception {
+        Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+        List<Memoire> memoires = new ArrayList<>();
+
+        String sqlQuery = "SELECT * FROM Memoire " +
+                "LEFT JOIN Professor ON Memoire.professor_id = Professor.id " +
+                "WHERE Memoire.title LIKE ? OR Memoire.resume LIKE ? OR Professor.nom LIKE ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setString(1, "%" + query + "%");
+        preparedStatement.setString(2, "%" + query + "%");
+        preparedStatement.setString(3, "%" + query + "%");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            int cote = resultSet.getInt("cote");
+            String title = resultSet.getString("title");
+            Professor professor = getProfessor(resultSet.getLong("professor_id"));
+
+            List<Student> students = new ArrayList<>();
+
+            for (Long studentId: getStudentsFromMemoire(connection, cote)) {
+                students.add(getStudent(studentId));
+            }
+
+            Student[] studentsArray = students.toArray(new Student[0]);
+
+            int date = resultSet.getInt("date");
+            Level level = Level.valueOf(resultSet.getString("level"));
+            String resume = resultSet.getString("resume");
+            String pdfUrl = resultSet.getString("pdf_url");
+
+            memoires.add(new Memoire(cote, title, professor, studentsArray, date, level, resume, pdfUrl));
+        }
+
+        preparedStatement.close();
+        resultSet.close();
+        connection.close();
+
+        return memoires.toArray(new Memoire[0]);
     }
 }

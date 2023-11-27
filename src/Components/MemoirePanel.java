@@ -171,7 +171,7 @@ public class MemoirePanel extends JPanel implements ActionListener {
         levels.setEnabled(!disabled);
 
         resumeField = new ResumeField("Resume", memoire.resume, disabled);
-        
+
         choosePdfButton.setEnabled(false);
     }
 

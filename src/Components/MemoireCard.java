@@ -1,42 +1,53 @@
 package Components;
 
 import Models.Memoire;
+import Models.Student;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 
-public class MemoireCard extends JPanel {
+public class MemoireCard extends JPanel implements ActionListener {
     JLabel title;
     JLabel author;
     JLabel year;
-    JLabel id;
+    JButton openButton = new JButton("OPEN");
+    JPanel leftPanel = new JPanel(new GridLayout(2, 1));
+    JPanel rightPanel = new JPanel(new GridLayout(2, 1));
+
+
     public MemoireCard(Memoire memoire) {
+        setLayout();
+        setComponents(memoire);
+        addActionListener();
+        addComponents();
+    }
+
+    void setLayout() {
+        setBorder(new EmptyBorder(8, 8, 8, 8));
+        leftPanel.setBorder(new EmptyBorder(0, 0, 0, 8));
+    }
+    void setComponents(Memoire memoire) {
         title = new JLabel("Title: " + memoire.title);
-        author = new JLabel("Author: " + Arrays.stream(memoire.authors).findFirst().toString());
+        Student firstAuthor = Arrays.stream(memoire.authors).findFirst().orElse(null);
+        author = new JLabel("Author: " + (firstAuthor != null ? firstAuthor.nom + " " + firstAuthor.prenom : "Unknown"));
         year = new JLabel("Year: " + memoire.date);
-        id = new JLabel("#" + memoire.cote);
-
-        // Create two JPanels to hold labels on the left and right sides
-        JPanel leftPanel = new JPanel(new GridLayout(2, 1));
-        JPanel rightPanel = new JPanel(new GridLayout(2, 1));
-
-        // Add labels to the left panel
+    }
+    void addComponents() {
         leftPanel.add(title);
         leftPanel.add(author);
-
-        // Add labels to the right panel
         rightPanel.add(year);
-        rightPanel.add(id);
+        rightPanel.add(openButton);
 
-        leftPanel.setBorder(new EmptyBorder(0, 0, 0, 8));
-
-        this.setBorder(new EmptyBorder(8, 8, 8, 8));
-
-        // Add the left and right panels to the MemoireCard
         this.add(leftPanel);
         this.add(rightPanel);
+    }
+
+    void addActionListener() {
+        openButton.addActionListener(this);
     }
 
     @Override
@@ -45,7 +56,11 @@ public class MemoireCard extends JPanel {
                 "title=" + title.getText() +
                 ", author=" + author.getText() +
                 ", year=" + year.getText() +
-                ", id=" + id.getText() +
                 '}';
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
     }
 }
