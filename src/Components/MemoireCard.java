@@ -8,9 +8,13 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class MemoireCard extends JPanel implements ActionListener {
+
+    Memoire memoire;
     JLabel title;
     JLabel author;
     JLabel year;
@@ -20,6 +24,7 @@ public class MemoireCard extends JPanel implements ActionListener {
 
 
     public MemoireCard(Memoire memoire) {
+        this.memoire = memoire;
         setLayout();
         setComponents(memoire);
         addActionListener();
@@ -61,6 +66,18 @@ public class MemoireCard extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (memoire.pdfUrl != null) {
+            openPdf(memoire.pdfUrl);
+        } else {
+            JOptionPane.showMessageDialog(MemoireCard.this, "An error occurred, empty location");
+        }
+    }
 
+    private void openPdf(String pdfPath) {
+        try {
+            Desktop.getDesktop().open(new File(pdfPath));
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(MemoireCard.this, "An error occurred, couldn't find file at selected location");
+        }
     }
 }

@@ -12,55 +12,57 @@ import java.awt.*;
 
 public class MyThesis extends JFrame implements TreeSelectionListener {
 
-    private final JTree tree;
-    private final MainContent mainContent;
+    JPanel upperBar;
+    NavigationBar navBar;
+    private JTree tree;
+    private MainContent mainContent;
+    ProfileBar profileBar;
+    JPanel bottomBar;
 
     public MyThesis(User user) {
-        this.setLayout(new BorderLayout());
+        setLayout();
+        initializeComponents(user);
+        setPreferredSize();
+        setBackgroundColor();
+        addActionListeners();
+        addComponents();
 
-        JPanel upperBar = new JPanel();
-
-        upperBar.setPreferredSize(new Dimension(200, 30));
-        upperBar.setBackground(Color.lightGray);
-        this.add(upperBar, BorderLayout.NORTH);
-
-        // Navigation Bar
-        NavigationBar navBar = new NavigationBar(user);
-
-        tree = new JTree(navBar);
-        tree.addTreeSelectionListener(this);
-
-        add(tree, BorderLayout.WEST);
-        // --> Navigation Bar
-
-        // Main Space
-        mainContent = new MainContent(user);
-
-        this.add(mainContent, BorderLayout.CENTER);
-        // --> Main Space
-
-
-        // Visualisation Bar
-        ProfileBar visualBar = new ProfileBar(user);
-
-        this.add(visualBar, BorderLayout.EAST);
-        // --> Visualisation Bar
-
-        // Bottom Bar
-        JPanel bottomBar = new JPanel();
-
-        bottomBar.setPreferredSize(new Dimension(200, 30));
-        bottomBar.setBackground(Color.lightGray);
-        this.add(bottomBar, BorderLayout.SOUTH);
-        // --> Bottom Bar
-
-        setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
+    private void setLayout() {
+        setLayout(new BorderLayout());
+    }
+    private void initializeComponents(User user) {
+        upperBar = new JPanel();
+        navBar = new NavigationBar(user);
+        tree = new JTree(navBar);
+        mainContent = new MainContent(user);
+        profileBar = new ProfileBar(user);
+        bottomBar = new JPanel();
+    }
+    private void setPreferredSize() {
+        upperBar.setPreferredSize(new Dimension(200, 30));
+        bottomBar.setPreferredSize(new Dimension(200, 30));
+        setSize(900, 600);
+    }
+    private void setBackgroundColor() {
+        upperBar.setBackground(Color.lightGray);
+        bottomBar.setBackground(Color.lightGray);
+    }
+    private void addActionListeners() {
+        tree.addTreeSelectionListener(this);
+    }
+    private void addComponents() {
+        this.add(upperBar, BorderLayout.NORTH);
+        this.add(tree, BorderLayout.WEST);
+        this.add(mainContent, BorderLayout.CENTER);
+        this.add(profileBar, BorderLayout.EAST);
+        this.add(bottomBar, BorderLayout.SOUTH);
+    }
     @Override
     public void valueChanged(TreeSelectionEvent e) {
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();

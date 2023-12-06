@@ -9,10 +9,12 @@ public class InlineField extends JPanel {
 
     public InlineField(String string) {
         setLayout(new FlowLayout(FlowLayout.LEFT));
+        setPreferredSize(new Dimension(130, 30));
 
         JLabel label = new JLabel(string);
         textField = new JTextField(15);
         textField.setSize(new Dimension(130, 30));
+
 
         add(label);
         add(textField);
@@ -20,6 +22,7 @@ public class InlineField extends JPanel {
 
     public InlineField(String string, String value, boolean disabled) {
         setLayout(new FlowLayout(FlowLayout.LEFT));
+        setPreferredSize(new Dimension(130, 30));
 
         JLabel label = new JLabel(string);
         textField = new JTextField(15);
@@ -33,6 +36,7 @@ public class InlineField extends JPanel {
 
     public InlineField(String label, Long id, String value, boolean disabled) {
         setLayout(new FlowLayout(FlowLayout.LEFT));
+        setPreferredSize(new Dimension(130, 30));
 
         JLabel jLabel = new JLabel(label);
         textField = new JTextField(15);

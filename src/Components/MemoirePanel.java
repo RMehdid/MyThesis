@@ -31,7 +31,7 @@ public class MemoirePanel extends JPanel implements ActionListener {
     private final JButton showPdf = new JButton("show pdf");
     private final JPanel buttonsPanel = new JPanel();
     private final JButton confirm = new JButton("confirm");
-    private final JButton cancel = new JButton("cancel");
+    private JButton cancel = new JButton("cancel");
 
     private String pdfPath;
 
@@ -195,7 +195,9 @@ public class MemoirePanel extends JPanel implements ActionListener {
         pdfPanel.add(showPdf);
 
         buttonsPanel.add(cancel);
-        buttonsPanel.add(confirm);
+        if (method.method != Method.READ) {
+            buttonsPanel.add(confirm);
+        }
 
         this.add(pdfPanel);
         this.add(buttonsPanel);
@@ -296,7 +298,7 @@ public class MemoirePanel extends JPanel implements ActionListener {
                 pdfPath = selectedFile.getAbsolutePath();
             }
         } else if(e.getSource() == showPdf) {
-            if (!pdfPath.isEmpty()) {
+            if (pdfPath != null) {
                 openPdf(pdfPath);
             } else {
                 JOptionPane.showMessageDialog(MemoirePanel.this, "Please choose a PDF file first.");

@@ -12,18 +12,7 @@ public class Admin extends User {
     public void createMemoire(String title, Long professorId, int date, Long[] studentsIds, Level level, String resume, String pdfUrl) throws Exception {
         DBConnector.createMemoire(title, professorId, date, studentsIds, level, resume, pdfUrl);
     }
-    public void updateMemoire(
-            int cote,
-            String title,
-            Long professorId,
-            int date,
-            ConnectionUrlParser.@NotNull Pair<Long, Long> studentId1,
-            ConnectionUrlParser.Pair<Long, Long> studentId2,
-            ConnectionUrlParser.Pair<Long, Long> studentId3,
-            Level level,
-            String resume,
-            String pdfUrl
-    ) throws Exception {
+    public void updateMemoire(int cote, String title, Long professorId, int date, ConnectionUrlParser.@NotNull Pair<Long, Long> studentId1, ConnectionUrlParser.Pair<Long, Long> studentId2, ConnectionUrlParser.Pair<Long, Long> studentId3, Level level, String resume, String pdfUrl) throws Exception {
         DBConnector.updateMemoire(cote, title, professorId, date, studentId1, studentId2, studentId3, level, resume, pdfUrl);
     }
     public void deleteMemoire(int cote) throws Exception {
@@ -47,5 +36,9 @@ public class Admin extends User {
     public void deleteProfessor(Long id) throws Exception  {
         DBConnector.deleteProfessor(id);
     }
+    public void modifyAdmin() throws Exception {
+        DBConnector.modifyUser(this);
+    }
+
     public static Admin admin = new Admin(978L, "Admin", "Admin");
 }

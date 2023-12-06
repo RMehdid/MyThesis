@@ -23,7 +23,7 @@ public class SearchPanel extends JPanel implements KeyListener {
 
     private void queryGetterBuilder() {
         JLabel label = new JLabel("Search for a memoire");
-        textField.setPreferredSize(new Dimension(500, 56));
+        textField.setPreferredSize(new Dimension(400, 56));
 
         textField.addKeyListener(this);
 

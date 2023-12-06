@@ -21,6 +21,11 @@ public class NavigationBar extends DefaultMutableTreeNode {
     DefaultMutableTreeNode deleteProfNode;
 
     NavigationBar(User user) {
+        initializeComponents();
+        addComponents(user);
+    }
+
+    private void initializeComponents() {
         memoireNode = new DefaultMutableTreeNode("Espace memoire");
 
         createMemoireNode = new DefaultMutableTreeNode("Ajouter");
@@ -37,9 +42,9 @@ public class NavigationBar extends DefaultMutableTreeNode {
         createProfNode = new DefaultMutableTreeNode("Ajouter Enseignant");
         modifyProfNode = new DefaultMutableTreeNode("Modifier Enseignant");
         deleteProfNode = new DefaultMutableTreeNode("Supprimer Enseignant");
-
+    }
+    private void addComponents(User user) {
         memoireNode.add(readMemoireNode);
-
         if(user instanceof Admin) {
             memoireNode.add(createMemoireNode);
             memoireNode.add(modifyMemoireNode);

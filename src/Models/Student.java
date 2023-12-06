@@ -1,5 +1,7 @@
 package Models;
 
+import Service.DBConnector;
+
 /**
  * 
  */
@@ -11,5 +13,8 @@ public class Student extends User {
         this.speciality = speciality;
     }
 
+    public void modifyStudent() throws Exception {
+        DBConnector.modifyUser(this);
+    }
     public static Student student = new Student(1021L, "Mehdid", "Samy Abderraouf", Speciality.Informatics);
 }

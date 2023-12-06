@@ -224,6 +224,7 @@ public class DBConnector {
         if(professorExists(professorId)) {
             preparedStatement.setLong(2, professorId);
         } else {
+            connection.rollback(savepoint);
             throw new Exception("Professor with id: " + professorId + " does not exist");
         }
         preparedStatement.setInt(3, date);
@@ -417,7 +418,6 @@ public class DBConnector {
 
         preparedStatement.close();
     }
-
     public static Memoire @NotNull [] getMemoires(String query) throws Exception {
         Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
         List<Memoire> memoires = new ArrayList<>();
@@ -456,5 +456,55 @@ public class DBConnector {
         connection.close();
 
         return memoires.toArray(new Memoire[0]);
+    }
+    public static void modifyUser(@NotNull Student student) throws Exception {
+        Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+
+        String query = "UPDATE Student SET nom=?, prenom=?, speciality=? WHERE id=?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        preparedStatement.setString(1, student.nom);
+        preparedStatement.setString(2, student.prenom);
+        preparedStatement.setString(3, student.speciality.toString());
+        preparedStatement.setLong(4, student.id);
+
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+        connection.close();
+    }
+    public static void modifyUser(@NotNull Professor professor) throws Exception {
+        Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+
+        String query = "UPDATE Professor SET nom=?, prenom=?, speciality=? WHERE id=?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        preparedStatement.setString(1, professor.nom);
+        preparedStatement.setString(2, professor.prenom);
+        preparedStatement.setString(3, professor.speciality.toString());
+        preparedStatement.setLong(4, professor.id);
+
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+        connection.close();
+    }
+    public static void modifyUser(@NotNull Admin admin) throws Exception {
+        Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+
+        String query = "UPDATE Admin SET nom=?, prenom=? WHERE id=?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        preparedStatement.setString(1, admin.nom);
+        preparedStatement.setString(2, admin.prenom);
+        preparedStatement.setLong(3, admin.id);
+
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+        connection.close();
     }
 }
